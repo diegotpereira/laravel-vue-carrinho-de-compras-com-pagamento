@@ -1,9 +1,9 @@
 <template>
 	<div>
+		<app-header />
 		<div class="container">
 			<div>
 				<div class="text-center">
-					<h1>Teste</h1>
 					<strong>Bem Vindo</strong>
 				</div>
 			</div>
@@ -14,8 +14,17 @@
 	</div>
 </template>
 <script>
+import Header from './components/Header.vue'
 export default {
-	name: 'App'
+	name: 'App',
+	data() {
+		return {
+			
+		}
+	},
+	components: {
+		appHeader: Header
+	}
 }
 </script>
 <style>
