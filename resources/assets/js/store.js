@@ -20,9 +20,40 @@ const getters = {
     }
 }
 const mutations = {
-
+    recuperarToken(state, token) {
+        state.token = token
+    }
 }
 const actions = {
+    recuperarToken(context, credentials) {
+        return new Promise((resolve, reject) => {
+            axios.post('/entrar', {
+                    username: credentials.username,
+                    password: credentials.password
+                })
+                .then((response) => {
+                    const token = response.data.access_token
+
+                    localStorage.setIte('access_token', token)
+                    context.commit('recuperarToken', token)
+
+                    // verificar é função de administrador
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+                    axios.get('/ehAdmin')
+                        .then((response) => {
+                            const ehAdmin = response.data.role
+                            localStorage.setItem('ehAdmin', ehAdmin)
+
+                            // fim da função de verificação
+                            resolve(response)
+                        })
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
     registrar(context, data) {
         return new Promise((resolve, reject) => {
             axios.post('/registrar', {

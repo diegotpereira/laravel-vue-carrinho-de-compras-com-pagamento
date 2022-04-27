@@ -18,6 +18,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:api')->group(function () {
+	Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@isAdmin');
+});
+
+Route::post('/entrar', [
+	'uses' =>  'App\Http\Controllers\AuthController@entrar'
+]);
+
 Route::post('/registrar', [
 	'uses'=> 'App\Http\Controllers\AuthController@registrar'
 ]);
