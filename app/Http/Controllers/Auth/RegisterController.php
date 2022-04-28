@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
@@ -14,6 +14,15 @@ class RegisterController extends Controller
     {
         $this->middleware('guest');
     }
+
+	public function validator(array $data)
+	{
+		return Validator::make($data, [
+			'name' => 'required|string|max:255',
+			'email' => 'required|string|email|max:255|unique:users',
+			'password' => 'required|string|min:6|confirmed',
+		]);
+	}
 
 	protected function create(array $data) 
 	{

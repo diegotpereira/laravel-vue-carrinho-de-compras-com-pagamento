@@ -11,12 +11,12 @@
 			<form @submit.prevent="enviar">
 				<div class="form-group">
 					<label for="email">Email</label>
-					<input type="email" name="username" id="username" class="form-control" v-model="username"  >
+					<input type="email" v-validate="'required|email'" name="username" id="username" class="form-control" v-model="username" :class="{ 'input-error' : errors.has('username') }" >
 					<span class="alert-danger dang"></span>
 				</div>
 				<div class="form-group">
 					<label for="password">Senha</label>
-					<input type="password" name="password" id="password" class="form-control" v-model="password" >
+					<input type="password" v-validate="'required|min:6'" name="password" id="password" class="form-control" v-model="password" >
 					<span class="alert-danger dang"></span>
 				</div>
 				<button class="btn btn-primary">Entrar</button>

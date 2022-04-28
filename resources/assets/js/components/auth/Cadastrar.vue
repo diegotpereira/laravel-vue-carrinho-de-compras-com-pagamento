@@ -21,7 +21,7 @@
 				</div>
 				<div class="form-group">
 					<label for="password">Senha</label>
-					<input type="text" v-validate="'required|min:6'" name="password" id="password" class="form-control" v-model="password"  >
+					<input type="password" v-validate="'required|min:6'" name="password" id="password" class="form-control" v-model="password"  >
 					<span class="alert-dander dang"></span>
 				</div>
 				<button class="btn btn-romary">Cadastrar</button>
@@ -34,7 +34,7 @@ export default {
 	data() {
 		return {
 			email: '',
-			nome: '',
+			name: '',
 			password: '',
 			ServerErrors: []
 		}

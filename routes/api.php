@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,11 +18,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api')->group(function () {
-	Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@isAdmin');
+	Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@ehAdmin');
+	
 });
 
-Route::post('/entrar', [
-	'uses' =>  'App\Http\Controllers\AuthController@entrar'
+Route::post('/AddProduto', 'App\Http\Controllers\ProdutoController@AddNovo');
+
+Route::post('/login', [
+	'uses' =>  'App\Http\Controllers\AuthController@login'
 ]);
 
 Route::post('/registrar', [

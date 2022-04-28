@@ -4,6 +4,7 @@ import CarrinhoCompras from './components/shop/CarrinhoCompras.vue'
 import Admin from './components/admin/Admin.vue'
 import Entrar from './components/auth/Entrar.vue'
 import Perfil from './components/auth/profile/Perfil.vue'
+import NovoProduto from './components/admin/NovoProduto.vue'
 
 export const routes = [
 
@@ -30,5 +31,9 @@ export const routes = [
     {
         path: '/Perfil',
         component: Perfil
+    },
+    {
+        path: '/NovoProduto',
+        component: NovoProduto
     }
 ]

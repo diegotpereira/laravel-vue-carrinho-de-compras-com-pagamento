@@ -1,40 +1,42 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-//import { URL_BASE } from '../../assets/js/project/configs/configs'
-
 
 Vue.use(Vuex);
 
-//axios.defaults.baseURL = 'http://localhost:8000/api'
-
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
-//const RESOURCE = '/registrar';
 
 const state = {
-    token: localStorage.getItem('access_token') || null
+    token: localStorage.getItem('access_token') || null,
+    admin: localStorage.getItem('ehAdmin') || null
 }
 const getters = {
     logado(state) {
         return state.token !== null
+    },
+    ehAdmin(state) {
+        return state.admin !== null
     }
 }
 const mutations = {
     recuperarToken(state, token) {
         state.token = token
+    },
+    ehAdmin(state, ehAdmin) {
+        state.admin = ehAdmin
     }
 }
 const actions = {
     recuperarToken(context, credentials) {
         return new Promise((resolve, reject) => {
-            axios.post('/entrar', {
+            axios.post('/login', {
                     username: credentials.username,
-                    password: credentials.password
+                    password: credentials.password,
                 })
                 .then((response) => {
                     const token = response.data.access_token
 
-                    localStorage.setIte('access_token', token)
+                    localStorage.setItem('access_token', token)
                     context.commit('recuperarToken', token)
 
                     // verificar é função de administrador
@@ -43,6 +45,7 @@ const actions = {
                         .then((response) => {
                             const ehAdmin = response.data.role
                             localStorage.setItem('ehAdmin', ehAdmin)
+                            context.commit('ehAdmin', ehAdmin)
 
                             // fim da função de verificação
                             resolve(response)
@@ -60,6 +63,22 @@ const actions = {
                     name: data.name,
                     email: data.email,
                     password: data.password
+                })
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    AddNovoProduto(context, data) {
+        return new Promise((resolve, reject) => {
+            axios.post('/AddProduto', {
+                    titulo: data.titulo,
+                    descricao: data.descricao,
+                    preco: data.preco,
+                    imagePath: data.imagePath
                 })
                 .then((response) => {
                     resolve(response)
