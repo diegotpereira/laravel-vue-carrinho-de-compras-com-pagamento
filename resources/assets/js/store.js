@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { reject } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -8,7 +9,8 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 
 const state = {
     token: localStorage.getItem('access_token') || null,
-    admin: localStorage.getItem('ehAdmin') || null
+    admin: localStorage.getItem('ehAdmin') || null,
+    ProdutoDado: null
 }
 const getters = {
     logado(state) {
@@ -16,6 +18,9 @@ const getters = {
     },
     ehAdmin(state) {
         return state.admin !== null
+    },
+    ProdutoDado(state) {
+        return state.ProdutoDado
     }
 }
 const mutations = {
@@ -24,6 +29,9 @@ const mutations = {
     },
     ehAdmin(state, ehAdmin) {
         state.admin = ehAdmin
+    },
+    ProdutoDado(state, ProdutoDado) {
+        state.ProdutoDado = ProdutoDado
     }
 }
 const actions = {
@@ -87,6 +95,22 @@ const actions = {
                     reject(error)
                 })
         })
+    },
+    ProdutoDado(context, ProdutoDado) {
+        if (context.getters.logado) {
+
+            return new Promise((resolve, reject) => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+                    axios.get('/produto')
+                        .then((response) => {
+                            context.commit('ProdutoDado', response.data.produtos)
+                            resolve(response)
+                        })
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        }
     }
 }
 
