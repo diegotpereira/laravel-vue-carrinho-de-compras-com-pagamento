@@ -10,8 +10,8 @@
 					<strong class="card-text">Preço{{qt.preco}}R$</strong>
 				</div>
 				<div v-if="!editavel">
-					<a href=""></a>
-					<a href=""></a>
+					<a href="" class="btn btn-primary">Editar</a>
+					<a href="" class="btn btn-danger">Deletar</a>
 				</div>
 			</div>
 		</div>
@@ -22,9 +22,9 @@
 					<input class="form-control vx" type="text" v-model="editDesc">
 					<input class="form-control vx" type="text" v-model="editPreco">
 
-					<img :src="dPath + image" class="img-responsive" alt="" :v-model="image" width="200px;">
+					<!--<img :src="dPath + image" class="img-responsive" v-model="image" width="200px;">-->
 
-					<input type="file" name="" id="" class="form-control">
+					<input type="file" v-on:change="mudarArquivo" class="form-control">
 
 					<a href=""></a>
 					<a href=""></a>
@@ -35,6 +35,36 @@
 </template>
 <script>
 export default {
-	name: 'Produto'
+	name: 'Produto',
+	props: ['qt'],
+	data() {
+		return {
+			editavel: false,
+			editValor: this.qt.titulo,
+			editDesc: this.qt.descricao,
+			editPreco: this.qt.preco,
+			image: this.qt.imagePath,
+			path: 'produtoImagens/' + this.qt.imagePath,
+			dPath: 'produtoImagens/',
+		}
+	},
+	methods: {
+		mudarArquivo(e) {
+			let files = e.target.files || e.dataTransfer.files
+			if (!files.length) 
+			return;
+
+			this.criarImagem(files[0])
+			this.dPath = ''
+		},
+		criarImagem(file) {
+			let reader = new FileReader()
+			let vm = this;
+			reader.onload = (e) => {
+				vm.image = e.targer.result
+			}
+			reader.readAsDataURL(file)
+		}
+	}
 }
 </script>

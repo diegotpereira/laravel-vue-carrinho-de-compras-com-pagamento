@@ -19,10 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::middleware('auth:api')->group(function () {
 	Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@ehAdmin');
-	
+	Route::get('/produto', 'App\Http\Controllers\ProdutoController@index');
+	Route::post('/AddProduto', 'App\Http\Controllers\ProdutoController@AddNovo');
 });
 
-Route::post('/AddProduto', 'App\Http\Controllers\ProdutoController@AddNovo');
+
+    
 
 Route::post('/login', [
 	'uses' =>  'App\Http\Controllers\AuthController@login'

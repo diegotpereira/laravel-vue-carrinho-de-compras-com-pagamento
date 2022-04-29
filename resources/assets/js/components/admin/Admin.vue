@@ -10,7 +10,7 @@
 			<app-produto
 				v-for="(produto, index) in produtos" 
 				:q="produto"
-				:key="index">
+				:key="produto.id">
 			</app-produto>
 		</div>
 	</div>
@@ -30,7 +30,7 @@ export default {
 	methods: {
 		buscarProdutos() {
 			this.$store.dispatch('ProdutoDado')
-			.then((response) => {
+			.then(response => {
 				this.produtos = this.$store.getters.ProdutoDado
 				console.log(this.produtos);
 			}).catch((err) => {

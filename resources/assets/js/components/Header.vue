@@ -19,10 +19,10 @@
 				</div>
 				<div class="btn-group">
 					<router-link tag="a" class="btn" to="/Admin">
-					    <i class="fa-fa-cog" aria-hidden="true"></i> Administrador
+					    <i class="fa fa-cog" aria-hidden="true"></i> Administrador
 					</router-link>
 				</div>
-				<div class="btn-group">
+				<div class="btn-group" v-if="ehAdmin">
 					<router-link tag="a" class="btn" to="/UsuarioControle">
 					   <i class="fa fa-users" aria-hidden="true"></i> Controle de usuários
 					</router-link>
@@ -56,6 +56,9 @@ export default {
 		}
 	},
 	computed: {
+		ehAdmin() {
+			return this.$store.getters.ehAdmin
+		},
 		logado() {
 			return this.$store.getters.logado
 		}

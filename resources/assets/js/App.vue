@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<app-header />
+		<app-header></app-header>
 		<div class="container">
-			<div>
-				<div class="text-center">
-					<strong>Bem Vindo</strong>
+			<div v-bind="usuarioDado">
+				<div class="text-center" v-if="authDado">
+					<strong>Bem Vindo {{authDado.name}}</strong>
 				</div>
 			</div>
 			<transition name="slide" mode="out-in">
@@ -19,11 +19,28 @@ export default {
 	name: 'App',
 	data() {
 		return {
-			
+			authDado: null
 		}
 	},
 	components: {
 		appHeader: Header
+	},
+	computed: {
+		usuarioDado() {	
+			this.$store.dispatch('usuarioDado')
+			.then(response => {
+				this.authDado = this.$store.getters.usuarioDado
+				console.log(response);
+				console.log(this.usuarioDado);
+				return true
+			})
+			.catch(error => {
+				this.authDado = ''
+				console.log(error);
+
+				return false
+			})
+		}
 	}
 }
 </script>
