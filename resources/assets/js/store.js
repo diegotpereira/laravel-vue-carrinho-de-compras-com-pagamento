@@ -72,6 +72,12 @@ const mutations = {
                 state.carrinhoStore = novoArray
             localStorage.setItem("carrinhoStore", JSON.stringify(novoArray))
         }
+    },
+    destroirToken(state) {
+        state.token = null,
+            state.admin = null,
+            state.usuarioDado = null,
+            state.ProdutoDado = null
     }
 }
 const actions = {
@@ -136,37 +142,39 @@ const actions = {
                 })
         })
     },
-    ProdutoDado(context, ProdutoDado) {
+    async ProdutoDado(context, ProdutoDado) {
         console.log(ProdutoDado);
         if (context.getters.logado) {
 
-            return new Promise((resolve, reject) => {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+            try {
+                return await new Promise((resolve, reject) => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
                     axios.get('/produto')
                         .then((response) => {
-                            context.commit('ProdutoDado', response.data.produtos)
-                            resolve(response)
-                        })
-                })
-                .catch(error => {
-                    reject(error)
-                })
+                            context.commit('ProdutoDado', response.data.produtos);
+                            resolve(response);
+                        });
+                });
+            } catch (error) {
+                reject(error);
+            }
         }
     },
-    usuarioDado(context, usuarioDado) {
+    async usuarioDado(context, usuarioDado) {
         if (context.getters.logado) {
 
-            return new Promise((resolve, reject) => {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+            try {
+                return await new Promise((resolve, reject) => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
                     axios.get('/user')
                         .then((response) => {
-                            context.commit('usuarioDado', response.data)
-                            resolve(response)
-                        })
-                })
-                .catch(error => {
-                    reject(error)
-                })
+                            context.commit('usuarioDado', response.data);
+                            resolve(response);
+                        });
+                });
+            } catch (error) {
+                reject(error);
+            }
         }
     },
     AddNoCarrinho(context, data) {
@@ -176,6 +184,28 @@ const actions = {
             preco: data.preco,
             quantidade: data.quantidade
         })
+    },
+    destroirToken(context) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        if (context.getters.logado) {
+
+            return new Promise((resolve, reject) => {
+                axios.post('/logout')
+                    .then((response) => {
+                        localStorage.removeItem('access_token')
+                        localStorage.removeItem('ehAdmin')
+                        context.commit('destroirToken')
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        localStorage.removeItem('access_token')
+                        localStorage.removeItem('ehAdmin')
+                        context.commit('destroirToken')
+                        reject(error)
+                    })
+            })
+        }
     }
 }
 

@@ -38,7 +38,7 @@
 						<router-link v-if="!logado" tag="button" class="dropdown-item" to="/Cadastrar">
 							Cadastre-se
 						</router-link>
-						<router-link v-if="logado" tag="button" class="dropdown-item" to="/Sair">
+						<router-link v-if="logado" tag="button" class="dropdown-item" to="/Logout">
 							Sair
 						</router-link>
 					</div>

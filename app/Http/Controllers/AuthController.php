@@ -25,7 +25,7 @@ class AuthController extends Controller
         ];
 
         if(auth()->attempt($login_credentials)){
-			$user_login_token= auth()->user()->createToken('PassportExample@Section.io')->accessToken;
+			$user_login_token= auth()->user()->createToken('Laravel Password Grant Client')->accessToken;
 
 			return response()->json(['token' => $user_login_token], 200);
         }
@@ -53,6 +53,13 @@ class AuthController extends Controller
 		return response()->json([
 			'message' => 'Usuário Criado com Sucesso'
 		], 201);
+	}
+	public function logout() 
+	{
+		auth()->user()->tokens->each(function($token, $key) {
+			$token->delete();
+		});
+		return response()->json('desconectado com sucesso', 200);
 	}
 	public function ehAdmin(Request $request)
 	{
