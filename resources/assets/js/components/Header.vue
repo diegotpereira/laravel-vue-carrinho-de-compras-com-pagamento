@@ -17,7 +17,7 @@
 						</span>
 					</router-link>
 				</div>
-				<div class="btn-group">
+				<div class="btn-group" v-if="ehAdmin">
 					<router-link tag="a" class="btn" to="/Admin">
 					    <i class="fa fa-cog" aria-hidden="true"></i> Administrador
 					</router-link>

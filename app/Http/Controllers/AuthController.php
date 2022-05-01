@@ -37,12 +37,12 @@ class AuthController extends Controller
 	public function registrar(Request $request) 
 	{
 		$this->validate($request, [
-			'name' => 'required',
+			'username' => 'required',
 			'email' => 'required|email|unique:users',
 			'password' => 'required'
 		]);
 		$user = new User([
-			'name' => $request->input('name'),
+			'name' => $request->input('username'),
 			'email' => $request->input('email'),
 			'password' => bcrypt($request->input('password'))
 		]);
@@ -59,7 +59,7 @@ class AuthController extends Controller
 		auth()->user()->tokens->each(function($token, $key) {
 			$token->delete();
 		});
-		return response()->json('desconectado com sucesso', 200);
+		return response()->json('Desconectado com sucesso', 200);
 	}
 	public function ehAdmin(Request $request)
 	{

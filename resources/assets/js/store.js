@@ -10,10 +10,10 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 const state = {
     token: localStorage.getItem('access_token') || null,
     admin: localStorage.getItem('ehAdmin') || null,
+    usuarioDado: null,
     ProdutoDado: null,
     carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
     precoTotal: localStorage.getItem('precoTotal') || 0,
-    usuarioDado: null
 }
 const getters = {
     precoTotal(state) {
@@ -160,11 +160,11 @@ const actions = {
             }
         }
     },
-    async usuarioDado(context, usuarioDado) {
+    usuarioDado(context, usuarioDado) {
         if (context.getters.logado) {
-
+            console.log(usuarioDado);
             try {
-                return await new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => {
                     axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
                     axios.get('/user')
                         .then((response) => {

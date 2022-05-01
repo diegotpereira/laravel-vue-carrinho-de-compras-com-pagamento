@@ -2291,43 +2291,50 @@ vue__WEBPACK_IMPORTED_MODULE_4__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: 'history',
   routes: _routes__WEBPACK_IMPORTED_MODULE_1__.routes
-}); //router.beforeEach((to, from, next) => {
-//    if (to.matched.some(record => record.meta.requiresAuth)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (!store.getters.loggedIn) {
-//            next({
-//                path: '/Entrar',
-//            })
-//        } else {
-//            next()
-//        }
-//    } else if (to.matched.some(record => record.meta.requireVisitor)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (store.getters.loggedIn) {
-//            next({
-//                path: '/Perfil',
-//            })
-//        } else {
-//            next()
-//        }
-//    }
-//    if (to.matched.some(record => record.meta.requiresAdmin)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (!store.getters.ehAdmin) {
-//            next({
-//                path: ' ',
-//            })
-//        } else {
-//            next()
-//        }
-//    } else {
-//        next() // make sure to always call next()!
-//    }
-//})
+});
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
+      next({
+        path: '/Entrar'
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(function (record) {
+    return record.meta.requireVisitor;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
+      next({
+        path: '/Perfil'
+      });
+    } else {
+      next();
+    }
+  }
 
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAdmin;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.ehAdmin) {
+      next({
+        path: ' '
+      });
+    } else {
+      next();
+    }
+  } else {
+    next(); // make sure to always call next()!
+  }
+});
 vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('app', __webpack_require__(/*! ./App.vue */ "./resources/assets/js/App.vue"));
 var app = new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   el: '#app',
@@ -2417,25 +2424,46 @@ var routes = [{
   component: _components_Home_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
   path: '/Cadastrar',
-  component: _components_auth_Cadastrar_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  component: _components_auth_Cadastrar_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+  meta: {
+    requireVisitor: true
+  }
 }, {
   path: '/CarrinhoCompras',
-  component: _components_shop_CarrinhoCompras_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _components_shop_CarrinhoCompras_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }, {
   path: '/Admin',
-  component: _components_admin_Admin_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _components_admin_Admin_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+  meta: {
+    requiresAdmin: true
+  }
 }, {
   path: '/Entrar',
-  component: _components_auth_Entrar_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  component: _components_auth_Entrar_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+  meta: {
+    requireVisitor: true
+  }
 }, {
   path: '/Perfil',
-  component: _components_auth_profile_Perfil_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _components_auth_profile_Perfil_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }, {
   path: '/NovoProduto',
-  component: _components_admin_NovoProduto_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+  component: _components_admin_NovoProduto_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
+  meta: {
+    requiresAdmin: true
+  }
 }, {
   path: '/Logout',
-  component: _components_auth_Logout_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _components_auth_Logout_vue__WEBPACK_IMPORTED_MODULE_7__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }];
 
 /***/ }),
@@ -2474,10 +2502,10 @@ vue__WEBPACK_IMPORTED_MODULE_3__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_4_
 var state = {
   token: localStorage.getItem('access_token') || null,
   admin: localStorage.getItem('ehAdmin') || null,
+  usuarioDado: null,
   ProdutoDado: null,
   carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
-  precoTotal: localStorage.getItem('precoTotal') || 0,
-  usuarioDado: null
+  precoTotal: localStorage.getItem('precoTotal') || 0
 };
 var getters = {
   precoTotal: function precoTotal(state) {
@@ -2632,41 +2660,21 @@ var actions = {
     }))();
   },
   usuarioDado: function usuarioDado(context, _usuarioDado2) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!context.getters.logado) {
-                _context2.next = 10;
-                break;
-              }
+    if (context.getters.logado) {
+      console.log(_usuarioDado2);
 
-              _context2.prev = 1;
-              _context2.next = 4;
-              return new Promise(function (resolve, reject) {
-                (axios__WEBPACK_IMPORTED_MODULE_1___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
-                axios__WEBPACK_IMPORTED_MODULE_1___default().get('/user').then(function (response) {
-                  context.commit('usuarioDado', response.data);
-                  resolve(response);
-                });
-              });
-
-            case 4:
-              return _context2.abrupt("return", _context2.sent);
-
-            case 7:
-              _context2.prev = 7;
-              _context2.t0 = _context2["catch"](1);
-              (0,lodash__WEBPACK_IMPORTED_MODULE_2__.reject)(_context2.t0);
-
-            case 10:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[1, 7]]);
-    }))();
+      try {
+        return new Promise(function (resolve, reject) {
+          (axios__WEBPACK_IMPORTED_MODULE_1___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
+          axios__WEBPACK_IMPORTED_MODULE_1___default().get('/user').then(function (response) {
+            context.commit('usuarioDado', response.data);
+            resolve(response);
+          });
+        });
+      } catch (error) {
+        (0,lodash__WEBPACK_IMPORTED_MODULE_2__.reject)(error);
+      }
+    }
   },
   AddNoCarrinho: function AddNoCarrinho(context, data) {
     var id = data;
@@ -51276,24 +51284,26 @@ var render = function () {
               1
             ),
             _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "btn-group" },
-              [
-                _c(
-                  "router-link",
-                  { staticClass: "btn", attrs: { tag: "a", to: "/Admin" } },
+            _vm.ehAdmin
+              ? _c(
+                  "div",
+                  { staticClass: "btn-group" },
                   [
-                    _c("i", {
-                      staticClass: "fa fa-cog",
-                      attrs: { "aria-hidden": "true" },
-                    }),
-                    _vm._v(" Administrador\n\t\t\t\t"),
-                  ]
-                ),
-              ],
-              1
-            ),
+                    _c(
+                      "router-link",
+                      { staticClass: "btn", attrs: { tag: "a", to: "/Admin" } },
+                      [
+                        _c("i", {
+                          staticClass: "fa fa-cog",
+                          attrs: { "aria-hidden": "true" },
+                        }),
+                        _vm._v(" Administrador\n\t\t\t\t"),
+                      ]
+                    ),
+                  ],
+                  1
+                )
+              : _vm._e(),
             _vm._v(" "),
             _vm.ehAdmin
               ? _c(

@@ -15,30 +15,51 @@ export const routes = [
     },
     {
         path: '/Cadastrar',
-        component: Cadastrar
+        component: Cadastrar,
+        meta: {
+            requireVisitor: true
+        }
     },
     {
         path: '/CarrinhoCompras',
-        component: CarrinhoCompras
+        component: CarrinhoCompras,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/Admin',
-        component: Admin
+        component: Admin,
+        meta: {
+            requiresAdmin: true,
+        }
     },
     {
         path: '/Entrar',
-        component: Entrar
+        component: Entrar,
+        meta: {
+            requireVisitor: true
+        }
     },
     {
         path: '/Perfil',
-        component: Perfil
+        component: Perfil,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/NovoProduto',
-        component: NovoProduto
+        component: NovoProduto,
+        meta: {
+            requiresAdmin: true
+        }
     },
     {
         path: '/Logout',
-        component: Logout
+        component: Logout,
+        meta: {
+            requiresAuth: true
+        }
     }
 ]
