@@ -6,6 +6,8 @@ import Entrar from './components/auth/Entrar.vue'
 import Perfil from './components/auth/profile/Perfil.vue'
 import NovoProduto from './components/admin/NovoProduto.vue'
 import Logout from './components/auth/Logout.vue'
+import UsuarioControle from './components/admin/UsuarioControle/UsuarioControle.vue'
+import NovoUsuario from './components/admin/UsuarioControle/NovoUsuario.vue'
 
 export const routes = [
 
@@ -60,6 +62,20 @@ export const routes = [
         component: Logout,
         meta: {
             requiresAuth: true
+        }
+    },
+    {
+        path: '/UsuarioControle',
+        component: UsuarioControle,
+        meta: {
+            //requiresAdmin: true
+        }
+    },
+    {
+        path: '/NovoUsuario',
+        component: NovoUsuario,
+        meta: {
+            //requiresAdmin: true
         }
     }
 ]

@@ -22,9 +22,16 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@ehAdmin');
+Route::post('/AddNovoUsuario', 'App\Http\Controllers\AuthController@AddNovoUsuario');
+Route::get('/TodosUsuarios', 'App\Http\Controllers\AuthController@index');
+Route::put('/EditarUsuarios/{id}', 'App\Http\Controllers\AuthController@EditarUsuarios');
+Route::delete('/DeletarUsuario/{id}', 'App\Http\Controllers\AuthController@DeletarUsuario');
+Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
+Route::post('login', 'App\Http\Controllers\AuthController@login');
+Route::post('registrar', 'App\Http\Controllers\AuthController@registrar');
+
 Route::post('/addProduto', 'App\Http\Controllers\ProdutoController@addNovo');
 Route::get('/produto', 'App\Http\Controllers\ProdutoController@index');
-Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
 Route::put('/EditarProduto/{id}', 'App\Http\Controllers\ProdutoController@EditarProduto');
 Route::delete('/DeletarProduto/{id}', 'App\Http\Controllers\ProdutoController@DeletarProduto');
 Route::get('/getCarrinhoItens/{id}', 'App\Http\Controllers\ProdutoController@getCarrinhoItens');
@@ -36,8 +43,7 @@ Route::get('/getCarrinhoItens/{id}', 'App\Http\Controllers\ProdutoController@get
 //	'uses' =>  'App\Http\Controllers\AuthController@login'
 //]);
 
-Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
-Route::post('registrar', [App\Http\Controllers\AuthController::class, 'registrar']);
+
 
 //Route::post('/registrar', [
 //	'uses'=> 'App\Http\Controllers\AuthController@registrar'

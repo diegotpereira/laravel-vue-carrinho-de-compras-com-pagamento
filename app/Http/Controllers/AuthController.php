@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use Laravel\Passport\Client as OClient;
 use Laravel\Passport;
+use Illuminate\Support\Str;
+
 class AuthController extends Controller
 {
 	public function index()
@@ -350,5 +352,106 @@ public function registrar(Request $request)
 		} else {
 			return response()->json(["role" => null], 200);
 		}
+	}
+	public function EditarUsuarios(Request $request, $id)
+	{
+		$user = User::find($id);
+
+		if (file_exists(public_path().'/produtoImagens/'.$request->imagePath) AND $user->imagePath !== null) {
+			$user->imagePath = $request->input('imagePath');
+			$user->name = $request->input('name');
+			$user->role_id = $request->input('role_id');
+			$user->email = $request->input('email');
+			$user->password = bcrypt($request->input('password'));
+		} else if (file_exists(public_path().'/produtoImagens/'.$request->imagePath) AND $user->imagePath == null) {
+			$user->imagePath = null;
+			$user->name = $request->input('name');
+			$user->role_id = $request->input('role_id');
+			$user->email = $request->input('email');
+			$user->password = bcrypt($request->input('password'));
+		} else if (!file_exists(public_path().'/produtoImagens/'.$request->imagePath) AND $user->imagePath == null) {
+			$exploded = explode(',', $request->imagePath);
+			$decoded = base64_decode($exploded[1]);
+
+			if (str_contains($exploded[0], 'jpeg')) {
+				$extension = 'jpeg';
+			} else {
+				$extension =  'png';
+			}
+			$arquivoNome = str::random().'.'.$extension;
+			$path = public_path().'/produtoImagens/'.$arquivoNome;
+			file_put_contents($path, $decoded);
+
+			$user->imagePath = $arquivoNome;
+			$user->name = $request->input('name');
+			$user->role_Id = $request->input('role_id');
+			$user->email = $request->input('email');
+			$user->password = bcrypt($request->input('password'));
+		} else {
+			unlink(public_path().'/produtoImagens/'.$user->imagePath);
+			$exploded = explode(',', $request->imagePath);
+			$decoded = base64_decode($exploded[1]);
+
+			if (str_contains($exploded[0], 'jpeg')) {
+				$extension = 'jpeg';
+			} else {
+				$extension = 'png';
+			}
+			$arquivoNome = str::random().'.'.$extension;
+			$path = public_path().'/produtoImagens/'.$arquivoNome;
+			file_put_contents($path, $decoded);
+
+			$user->imagePath = $arquivoNome;
+			$user->name = $request->input('name');
+			$user->role_id = $request->input('role_id');
+			$user->email = $request->input('email');
+			$user->password = bcrypt($request->input('password'));
+		}
+		$user->save();
+
+		return response()->json(['user' => $user], 200);
+	}
+	public function AddNovoUsuario(Request $request)
+	{
+		$this->validate($request, [
+			'name' => 'required',
+			'email' => 'required|email|unique::users',
+			'password' => 'required'
+		]);
+		$input = $request->all();
+
+		$exploded = explode(',', $request->imagePath);
+		$decoded = base64_decode($exploded[1]);
+
+		if (str_contains($exploded[0], 'jpeg')) {
+			$extension = 'jpeg';
+		} else {
+			$extension = 'png';
+		}
+		$arquivoNome = str::random().'.'.$extension;
+		$path = public_path().'/produtoImagens/'.$arquivoNome;
+		file_put_contents($path, $decoded);
+
+		$user = new User([
+			'imagePath' => $arquivoNome,
+			'name' => $request->input('name'),
+			'roel_id' => $request->input('role_id'),
+			'email' => $request->input('email'),
+			'password' => bcrypt($request->input('password'))
+		]);
+		$user->save();
+
+		return response()->json(['user' => $user], 201);
+	}
+	public function DeletarUsuario($id)
+	{
+		$user = USer::find($id);
+
+		if ($user->imagePath !== null) {
+			unlink(public_path().'/produtoImagens/'.$user->imagePath);
+		}
+		$user->delete();
+
+		return response()->json(['message' => 'usuario deletado', 200]);
 	}
 }

@@ -285,6 +285,38 @@ const actions = {
             preco: data.preco,
             quantidade: data.quantidade
         })
+    },
+    AddNovoUsuario(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+            axios.post('/AddNovoUsuario', {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    imagePath: data.imagePath,
+                    role_id: data.role_id
+                })
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    DeletarUsuario(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+            axios.delete('/DeletarUsuario/' + data.id)
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
     }
 }
 

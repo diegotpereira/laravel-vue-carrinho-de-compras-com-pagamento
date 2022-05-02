@@ -22,7 +22,7 @@
 					    <i class="fa fa-cog" aria-hidden="true"></i> Administrador
 					</router-link>
 				</div>
-				<div class="btn-group" v-if="ehAdmin">
+				<div class="btn-group">
 					<router-link tag="a" class="btn" to="/UsuarioControle">
 					   <i class="fa fa-users" aria-hidden="true"></i> Controle de usuários
 					</router-link>
