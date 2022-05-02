@@ -2052,6 +2052,19 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    deletar: function deletar() {
+      this.qt.titulo = false;
+      this.$store.dispatch('DeletarProduto', {
+        id: this.qt.id
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    cancelar: function cancelar() {
+      this.editavel = false;
+    },
     mudarArquivo: function mudarArquivo(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -2665,6 +2678,16 @@ var actions = {
         preco: data.preco,
         imagePath: data.imagePath
       }).then(function (response) {
+        resolve(response);
+      })["catch"](function (error) {
+        reject(error);
+      });
+    });
+  },
+  DeletarProduto: function DeletarProduto(context, data) {
+    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/DeletarProduto/' + data.id).then(function (response) {
         resolve(response);
       })["catch"](function (error) {
         reject(error);
@@ -51036,7 +51059,10 @@ var render = function () {
                     _vm._v(" "),
                     _c(
                       "a",
-                      { staticClass: "btn btn-danger", attrs: { href: "" } },
+                      {
+                        staticClass: "btn btn-danger",
+                        on: { click: _vm.deletar },
+                      },
                       [_vm._v("Deletar")]
                     ),
                   ])
@@ -51130,7 +51156,14 @@ var render = function () {
                   [_vm._v("Salvar")]
                 ),
                 _vm._v(" "),
-                _c("a", { attrs: { href: "" } }),
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-danger vx",
+                    on: { click: _vm.cancelar },
+                  },
+                  [_vm._v("Cancelar")]
+                ),
               ]),
             ]),
           ])

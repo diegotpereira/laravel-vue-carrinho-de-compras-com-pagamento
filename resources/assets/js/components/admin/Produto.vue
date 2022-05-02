@@ -11,7 +11,7 @@
 				</div>
 				<div v-if="!editavel">
 					<a @click="editar" class="btn btn-primary">Editar</a>
-					<a href="" class="btn btn-danger">Deletar</a>
+					<a @click="deletar" class="btn btn-danger">Deletar</a>
 				</div>
 			</div>
 		</div>
@@ -27,7 +27,7 @@
 					<input type="file" v-on:change="mudarArquivo" class="form-control">
 
 					<a @click="atualizar" class="btn btn-primary vx">Salvar</a>
-					<a href=""></a>
+					<a @click="cancelar" class="btn btn-danger vx">Cancelar</a>
 				</div>
 			</div>
 		</div>
@@ -82,6 +82,22 @@ export default {
 					this.ServerErrors = Object.values(error.response.data)
 				}
 			})
+		},
+		deletar() {
+			this.qt.titulo = false 
+
+			this.$store.dispatch('DeletarProduto', {
+				id: this.qt.id
+			})
+			.then(response => {
+				console.log(response);
+			})
+			.catch(error => {
+				console.log(error);
+			})
+		},
+		cancelar() {
+			this.editavel = false
 		},
 		mudarArquivo(e) {
 			let files = e.target.files || e.dataTransfer.files

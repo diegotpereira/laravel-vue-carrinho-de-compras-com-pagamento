@@ -206,6 +206,19 @@ const actions = {
                 })
         })
     },
+    DeletarProduto(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+            axios.delete('/DeletarProduto/' + data.id)
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
     destroirToken(context) {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
 

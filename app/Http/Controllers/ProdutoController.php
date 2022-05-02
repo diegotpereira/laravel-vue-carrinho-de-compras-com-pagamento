@@ -88,6 +88,15 @@ class ProdutoController extends Controller
 
 		return response()->json(['produto' => $produto], 200);
 	}
+	public function DeletarProduto($id)
+	{
+		$produto = Produto::find($id);
+		unlink(public_path().'/produtoImagens/'.$produto->imagePath);
+
+		$produto->delete();
+
+		return response()->json(['message' => 'O produto foi deletado', 200]);
+	}
 
     /**
      * Show the form for creating a new resource.
