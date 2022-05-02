@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { reject } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -10,8 +9,8 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 const state = {
     token: localStorage.getItem('access_token') || null,
     admin: localStorage.getItem('ehAdmin') || null,
-    usuarioDado: null,
-    ProdutoDado: null,
+    usuarioDado: " ",
+    ProdutoDado: " ",
     carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
     precoTotal: localStorage.getItem('precoTotal') || 0,
 }
@@ -28,32 +27,23 @@ const getters = {
     ehAdmin(state) {
         return state.admin !== null
     },
+    usuarioDado(state) {
+        return state.usuarioDado
+    },
     ProdutoDado(state) {
         return state.ProdutoDado
     },
-    usuarioDado(state) {
-        return state.usuarioDado
-    }
 }
 const mutations = {
-    recuperarToken(state, token) {
+    login(state, token) {
         state.token = token
-    },
-    ehAdmin(state, ehAdmin) {
-        state.admin = ehAdmin
-    },
-    usuarioDado(state, usuarioDado) {
-        state.usuarioDado = usuarioDado
-    },
-    ProdutoDado(state, ProdutoDado) {
-        state.ProdutoDado = ProdutoDado
     },
     AddNoCarrinho(state, data) {
         const itensPreco = state.precoTotal
         const precoTotal = state.precoTotal
         const novoArray = state.carrinhoStore
         const item = data
-        const id = data.id
+        const Id = data.id
         const quantidade = data.quantidade
         const preco = data.preco
 
@@ -65,14 +55,28 @@ const mutations = {
         // O método find() retorna o valor do primeiro elemento 
         // do array que satisfizer a função de teste provida. 
         // Caso contrario, undefined é retornado.
-        const gravar = novoArray.find(value => value.id === id)
+        const record = novoArray.find(value => value.id === Id)
 
-        if (gravar) {
-            gravar.quantidade++
+        if (record) {
+            record.quantidade++
                 state.carrinhoStore = novoArray
+            localStorage.setItem("carrinhoStore", JSON.stringify(novoArray))
+        } else if (!record) {
+            novoArray.push(item)
+            state.carrinhoStore = novoArray
             localStorage.setItem("carrinhoStore", JSON.stringify(novoArray))
         }
     },
+    ehAdmin(state, ehAdmin) {
+        state.admin = ehAdmin
+    },
+    usuarioDado(state, usuarioDado) {
+        state.usuarioDado = usuarioDado
+    },
+    ProdutoDado(state, ProdutoDado) {
+        state.ProdutoDado = ProdutoDado
+    },
+
     destroirToken(state) {
         state.token = null,
             state.admin = null,
@@ -81,7 +85,15 @@ const mutations = {
     }
 }
 const actions = {
-    recuperarToken(context, credentials) {
+    AddNoCarrinho(context, data) {
+        const id = data
+        context.commit('AddNoCarrinho', {
+            id: data.id,
+            preco: data.preco,
+            quantidade: data.quantidade
+        })
+    },
+    login(context, credentials) {
         return new Promise((resolve, reject) => {
             axios.post('/login', {
                     username: credentials.username,
@@ -91,7 +103,7 @@ const actions = {
                     const token = response.data.access_token
 
                     localStorage.setItem('access_token', token)
-                    context.commit('recuperarToken', token)
+                    context.commit('login', token)
 
                     // verificar é função de administrador
                     axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
@@ -111,6 +123,40 @@ const actions = {
                 })
         })
     },
+    ProdutoDado(context, ProdutoDado) {
+        console.log(ProdutoDado)
+        if (context.getters.logado) {
+            return new Promise((resolve, reject) => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+                    axios.get('/produto')
+                        .then((response) => {
+                            context.commit('ProdutoDado', response.data.produtos)
+                            resolve(response)
+                        })
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        }
+    },
+    usuarioDado(context, usuarioDado) {
+        if (context.getters.logado) {
+            return new Promise((resolve, reject) => {
+
+                    //  check is admin function 
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
+                    axios.get('/user')
+                        .then((response) => {
+                            context.commit('usuarioDado', response.data);
+                            //  end of check function
+                            resolve(response);
+                        })
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        }
+    },
     registrar(context, data) {
         return new Promise((resolve, reject) => {
             axios.post('/registrar', {
@@ -128,7 +174,7 @@ const actions = {
     },
     AddNovoProduto(context, data) {
         return new Promise((resolve, reject) => {
-            axios.post('/AddProduto', {
+            axios.post('/addProduto', {
                     titulo: data.titulo,
                     descricao: data.descricao,
                     preco: data.preco,
@@ -140,49 +186,6 @@ const actions = {
                 .catch(error => {
                     reject(error)
                 })
-        })
-    },
-    async ProdutoDado(context, ProdutoDado) {
-        console.log(ProdutoDado);
-        if (context.getters.logado) {
-
-            try {
-                return await new Promise((resolve, reject) => {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
-                    axios.get('/produto')
-                        .then((response) => {
-                            context.commit('ProdutoDado', response.data.produtos);
-                            resolve(response);
-                        });
-                });
-            } catch (error) {
-                reject(error);
-            }
-        }
-    },
-    usuarioDado(context, usuarioDado) {
-        if (context.getters.logado) {
-            console.log(usuarioDado);
-            try {
-                return new Promise((resolve, reject) => {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
-                    axios.get('/user')
-                        .then((response) => {
-                            context.commit('usuarioDado', response.data);
-                            resolve(response);
-                        });
-                });
-            } catch (error) {
-                reject(error);
-            }
-        }
-    },
-    AddNoCarrinho(context, data) {
-        const id = data
-        context.commit('AddNoCarrinho', {
-            id: data.id,
-            preco: data.preco,
-            quantidade: data.quantidade
         })
     },
     destroirToken(context) {

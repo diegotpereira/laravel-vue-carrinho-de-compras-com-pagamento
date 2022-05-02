@@ -9,7 +9,7 @@
 			</div>
 			<app-produto
 				v-for="(produto, index) in produtos" 
-				:q="produto"
+				:qt="produto"
 				:key="produto.id">
 			</app-produto>
 		</div>

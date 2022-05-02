@@ -36,12 +36,12 @@ export default {
 	},
 	methods: {
 		enviar() {
-			this.$store.dispatch('recuperarToken', {
+			this.$store.dispatch('login', {
 				username: this.username,
 				password: this.password
 			})
 			.then(response => {
-				setTimeout(this.$router.push({path: 'Perfil'}), 3000)
+				setTimeout(this.$router.push({path: 'Perfil'}), 3000);
 			})
 			.catch(error => {
 				if (error.response.data.errors) {

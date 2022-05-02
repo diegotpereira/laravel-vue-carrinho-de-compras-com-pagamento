@@ -21,24 +21,37 @@ return [
         'scheme' => 'https',
     ],
 
-    'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
-    ],
+    //'postmark' => [
+    //    'token' => env('POSTMARK_TOKEN'),
+    //],
 
-    'ses' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    //'ses' => [
+    //    'key' => env('AWS_ACCESS_KEY_ID'),
+    //    'secret' => env('AWS_SECRET_ACCESS_KEY'),
+    //    'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    //],
+	'ses' => [
+        'key' => env('SES_KEY'),
+        'secret' => env('SES_SECRET'),
+        'region' => env('SES_REGION', 'us-east-1'),
+    ],
+	'sparkpost' => [
+        'secret' => env('SPARKPOST_SECRET'),
     ],
 	'stripe' => [
-        'model' => App\User::class,
+        'model' => App\Models\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
     'passport' => [
-        'login_endpoint' => env('PASSPORT_LOGIN_ENDPOINT'),
+        'login_endpoint' => env('/oauth/token'),
         'client_id' => env('PASSPORT_CLIENT_ID'),
         'client_secret' => env('PASSPORT_CLIENT_SECRET'),
     ],
+	//'passport' => [
+    //    'login_endpoint'  => env('TOKEN_LOGIN_ENDPOINT'),
+    //    'client_id'    => env('TOKEN_CLIENT_ID'),
+    //    'client_secret' => env('TOKEN_CLIENT_SECRET'),
+    //],
 
 ];

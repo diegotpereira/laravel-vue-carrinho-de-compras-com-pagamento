@@ -31,7 +31,7 @@ export const routes = [
         path: '/Admin',
         component: Admin,
         meta: {
-            requiresAdmin: true,
+            //requiresAdmin: true,
         }
     },
     {
@@ -52,7 +52,7 @@ export const routes = [
         path: '/NovoProduto',
         component: NovoProduto,
         meta: {
-            requiresAdmin: true
+            //requiresAdmin: true
         }
     },
     {
