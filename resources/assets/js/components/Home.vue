@@ -8,7 +8,7 @@
 					<h4 class="card-title">{{qt.titulo}}</h4>
 					<p class="card-text">{{qt.description}}</p>
 					<div>
-						<strong class="card-text">Preço{{qt.preco}}R$</strong>
+						<strong class="card-text">Preço R$ {{qt.preco}}</strong>
 					</div>
 					<div>
 						<a class="btn btn-primary" @click="AddNoCarrinho(qt.id, qt.preco)">Add no Carrinho</a>
@@ -31,6 +31,7 @@ export default {
 		getDado() {
 			this.$store.dispatch('ProdutoDado')
 			.then(response => {
+				console.log(response);
 				this.produtos = this.$store.getters.ProdutoDado
 				console.log(this.produtos);
 			})

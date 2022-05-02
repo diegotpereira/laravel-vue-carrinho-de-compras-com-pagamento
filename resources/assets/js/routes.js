@@ -24,7 +24,7 @@ export const routes = [
         path: '/CarrinhoCompras',
         component: CarrinhoCompras,
         meta: {
-            requiresAuth: true
+            //requiresAuth: true
         }
     },
     {

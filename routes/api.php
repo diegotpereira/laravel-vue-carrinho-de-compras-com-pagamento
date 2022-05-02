@@ -27,7 +27,7 @@ Route::get('/produto', 'App\Http\Controllers\ProdutoController@index');
 Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
 Route::put('/EditarProduto/{id}', 'App\Http\Controllers\ProdutoController@EditarProduto');
 Route::delete('/DeletarProduto/{id}', 'App\Http\Controllers\ProdutoController@DeletarProduto');
-
+Route::get('/getCarrinhoItens/{id}', 'App\Http\Controllers\ProdutoController@getCarrinhoItens');
 
 
     

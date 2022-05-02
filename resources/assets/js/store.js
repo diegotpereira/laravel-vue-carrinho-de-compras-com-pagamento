@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { reject } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -9,8 +10,8 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 const state = {
     token: localStorage.getItem('access_token') || null,
     admin: localStorage.getItem('ehAdmin') || null,
-    usuarioDado: " ",
-    ProdutoDado: " ",
+    usuarioDado: null,
+    ProdutoDado: null,
     carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
     precoTotal: localStorage.getItem('precoTotal') || 0,
 }
@@ -45,9 +46,9 @@ const mutations = {
         const item = data
         const Id = data.id
         const quantidade = data.quantidade
-        const preco = data.preco
+        const Preco = data.preco
 
-        const ultimoPreco = Number(preco) * Number(quantidade) + Number(itensPreco)
+        const ultimoPreco = Number(Preco) * Number(quantidade) + Number(itensPreco)
         state.precoTotal = ultimoPreco
 
         localStorage.setItem("precoTotal", ultimoPreco)
@@ -82,6 +83,29 @@ const mutations = {
             state.admin = null,
             state.usuarioDado = null,
             state.ProdutoDado = null
+    },
+    lixeiraDoCarrinho(state, data) {
+        const itensPreco = state.precoTotal
+        const Preco = data.preco
+        const novoArray = state.carrinhoStore
+        const Item = data
+        const Id = data.id
+        const record = novoArray.find(value => value.id === Id)
+        const quantidade = record.quantidade
+        const ultimoPreco = Number(itensPreco) - Number(Preco)
+
+        state.precoTotal = ultimoPreco
+        localStorage.setItem('precoTotal', ultimoPreco)
+
+        if (quantidade > 1) {
+            record.quantidade -= 1
+            state.carrinhoStore = novoArray
+            localStorage.setItem('carrinhoStore', JSON.stringify(novoArray))
+        } else if (quantidade == 1) {
+            novoArray.splice(record, 1)
+            state.carrinhoStore = novoArray
+            localStorage.setItem('carrinhoItem', JSON.stringify(novoArray))
+        }
     }
 }
 const actions = {
@@ -240,6 +264,27 @@ const actions = {
                     })
             })
         }
+    },
+    getCarrinhoItens(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+                axios.get('/getCarrinhoItens/' + data.id)
+            })
+            .then((response) => {
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+    },
+    lixeiraDoCarrinho(context, data) {
+        const id = data
+        context.commit('lixeiraDoCarrinho', {
+            id: data.id,
+            preco: data.preco,
+            quantidade: data.quantidade
+        })
     }
 }
 
