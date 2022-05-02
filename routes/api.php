@@ -18,13 +18,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api')->group(function () {
-	Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@ehAdmin');
-	Route::post('/addProduto', 'App\Http\Controllers\ProdutoController@addNovo');
-	
-	Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
+
 });
 
+Route::get('/ehAdmin', 'App\Http\Controllers\AuthController@ehAdmin');
+Route::post('/addProduto', 'App\Http\Controllers\ProdutoController@addNovo');
 Route::get('/produto', 'App\Http\Controllers\ProdutoController@index');
+Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
+Route::put('/EditarProduto/{id}', 'App\Http\Controllers\ProdutoController@EditarProduto');
+
+
 
     
 

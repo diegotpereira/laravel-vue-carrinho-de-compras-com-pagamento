@@ -188,6 +188,24 @@ const actions = {
                 })
         })
     },
+    EditarProduto(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+            axios.put('/EditarProduto/' + data.id, {
+                    titulo: data.titulo,
+                    descricao: data.descricao,
+                    preco: data.preco,
+                    imagePath: data.imagePath
+                })
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
     destroirToken(context) {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
 

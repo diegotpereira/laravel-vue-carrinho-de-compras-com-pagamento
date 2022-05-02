@@ -7,10 +7,10 @@
 				<h4 class="card-title">{{qt.titulo}}</h4>
 				<p class="card-text">{{qt.descricao}}</p>
 				<div>
-					<strong class="card-text">Preço{{qt.preco}}R$</strong>
+					<strong class="card-text">Preço R$ {{qt.preco}} </strong>
 				</div>
 				<div v-if="!editavel">
-					<a href="" class="btn btn-primary">Editar</a>
+					<a @click="editar" class="btn btn-primary">Editar</a>
 					<a href="" class="btn btn-danger">Deletar</a>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 
 					<input type="file" v-on:change="mudarArquivo" class="form-control">
 
-					<a href=""></a>
+					<a @click="atualizar" class="btn btn-primary vx">Salvar</a>
 					<a href=""></a>
 				</div>
 			</div>
@@ -49,6 +49,40 @@ export default {
 		}
 	},
 	methods: {
+		editar() {
+			this.editavel = true,
+			this.editValor = this.qt.titulo,
+			this.editDesc = this.qt.descricao,
+			this.editPreco = this.qt.preco,
+			this.image = this.qt.imagePath
+		},
+		atualizar() {
+			this.editavel = false,
+			this.qt.titulo = this.editValor,
+			this.dt.descricao = this.editDesc,
+			this.qt.preco = this.editPreco,
+			this.qt.imagePath = this.image
+
+			this.$store.dispatch('EditarProduto', {
+				titulo: this.editValor,
+				descricao: this.editDesc,
+				preco: this.editPreco,
+				imagePath: this.image,
+				id: this.qt.id
+			})
+			.then(response => {
+				console.log(response);
+			})
+			.catch(error => {
+				if (error.response.data.errors) {
+					console.log(Object.values(error.response.data.errors));
+					this.ServerErrors = Object.values(error.response.data.errors)
+				} else {
+					console.log(Objcet.values(error.response.data));
+					this.ServerErrors = Object.values(error.response.data)
+				}
+			})
+		},
 		mudarArquivo(e) {
 			let files = e.target.files || e.dataTransfer.files
 			if (!files.length) 

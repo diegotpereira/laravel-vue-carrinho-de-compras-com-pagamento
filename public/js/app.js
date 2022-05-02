@@ -2027,6 +2027,31 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    editar: function editar() {
+      this.editavel = true, this.editValor = this.qt.titulo, this.editDesc = this.qt.descricao, this.editPreco = this.qt.preco, this.image = this.qt.imagePath;
+    },
+    atualizar: function atualizar() {
+      var _this = this;
+
+      this.editavel = false, this.qt.titulo = this.editValor, this.dt.descricao = this.editDesc, this.qt.preco = this.editPreco, this.qt.imagePath = this.image;
+      this.$store.dispatch('EditarProduto', {
+        titulo: this.editValor,
+        descricao: this.editDesc,
+        preco: this.editPreco,
+        imagePath: this.image,
+        id: this.qt.id
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        if (error.response.data.errors) {
+          console.log(Object.values(error.response.data.errors));
+          _this.ServerErrors = Object.values(error.response.data.errors);
+        } else {
+          console.log(Objcet.values(error.response.data));
+          _this.ServerErrors = Object.values(error.response.data);
+        }
+      });
+    },
     mudarArquivo: function mudarArquivo(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -2620,6 +2645,21 @@ var actions = {
   AddNovoProduto: function AddNovoProduto(context, data) {
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/addProduto', {
+        titulo: data.titulo,
+        descricao: data.descricao,
+        preco: data.preco,
+        imagePath: data.imagePath
+      }).then(function (response) {
+        resolve(response);
+      })["catch"](function (error) {
+        reject(error);
+      });
+    });
+  },
+  EditarProduto: function EditarProduto(context, data) {
+    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put('/EditarProduto/' + data.id, {
         titulo: data.titulo,
         descricao: data.descricao,
         preco: data.preco,
@@ -50979,7 +51019,7 @@ var render = function () {
               _vm._v(" "),
               _c("div", [
                 _c("strong", { staticClass: "card-text" }, [
-                  _vm._v("Preço" + _vm._s(_vm.qt.preco) + "R$"),
+                  _vm._v("Preço R$ " + _vm._s(_vm.qt.preco) + " "),
                 ]),
               ]),
               _vm._v(" "),
@@ -50987,7 +51027,10 @@ var render = function () {
                 ? _c("div", [
                     _c(
                       "a",
-                      { staticClass: "btn btn-primary", attrs: { href: "" } },
+                      {
+                        staticClass: "btn btn-primary",
+                        on: { click: _vm.editar },
+                      },
                       [_vm._v("Editar")]
                     ),
                     _vm._v(" "),
@@ -51078,7 +51121,14 @@ var render = function () {
                   on: { change: _vm.mudarArquivo },
                 }),
                 _vm._v(" "),
-                _c("a", { attrs: { href: "" } }),
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-primary vx",
+                    on: { click: _vm.atualizar },
+                  },
+                  [_vm._v("Salvar")]
+                ),
                 _vm._v(" "),
                 _c("a", { attrs: { href: "" } }),
               ]),

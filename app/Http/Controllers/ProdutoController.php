@@ -55,6 +55,39 @@ class ProdutoController extends Controller
 
 		return response()->json(['produto' => $produto], 201);
 	}
+	public function EditarProduto(Request $request, $id)
+	{
+		$produto = Produto::find($id);
+
+		if (file_exists(public_path().'/produtoImagens/'.$request->imagePath)) {
+			$produto->imagePath = $request->input('imagePath');
+			$produto->titulo = $request->input('titulo');
+			$produto->descricao = $request->input('descricao');
+			$produto->preco = $request->input('preco'); 
+		} else {
+			unlink(public_path().'/produtoImagens/'.$produto->imagePath);
+
+			$exploded = explode(',', $request->imagePath);
+			$decoded = base64_decode($exploded[1]);
+
+			if (str_contains($exploded[0], 'jpeg')) {
+				$extension = 'jpeg';
+			} else {
+				$extension = 'png';
+			}
+			$arquivoNome = str::random().'.'.$extension;
+			$path = public_path().'/produtoImagens/'.$arquivoNome;
+			file_put_contents($path, $decoded);
+
+			$produto->imagePath = $arquivoNome;
+			$produto->titulo = $request->input('titulo');
+			$produto->descricao = $request->input('descricao');
+			$produto->preco = $request->input('preco');
+		}
+		$produto->save();
+
+		return response()->json(['produto' => $produto], 200);
+	}
 
     /**
      * Show the form for creating a new resource.
