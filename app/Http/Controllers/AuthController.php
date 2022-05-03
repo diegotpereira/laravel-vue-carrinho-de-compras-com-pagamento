@@ -303,6 +303,11 @@ public function registrar(Request $request)
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
         ]);
+		//$user = new User([
+		//	'name' => $request->input('name'),
+		//	'email' => $request->input('email'),
+		//	'password' => bcrypt($request->input('password'))
+		//]);
  
         $user = User::create([
             'name' => $request->input('name'),

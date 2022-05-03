@@ -2549,7 +2549,7 @@ __webpack_require__.r(__webpack_exports__);
     enviar: function enviar() {
       var _this = this;
 
-      this.$store.dispatch('login', {
+      this.$store.dispatch('recuperarToken', {
         username: this.username,
         password: this.password
       }).then(function (response) {
@@ -2667,12 +2667,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    varificar: function varificar() {
+    CheckOut: function CheckOut() {
       var _this = this;
 
-      var preco = this.$store.getters.precoTotal;
-      this.$store.dispatch('verificar', {
-        preco: preco
+      var Preco = this.$store.getters.precoTotal;
+      this.$store.dispatch('Verificar', {
+        preco: Preco
       }).then(function (response) {
         _this.data = response.data;
       })["catch"](function (error) {
@@ -2789,43 +2789,50 @@ vue__WEBPACK_IMPORTED_MODULE_4__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: 'history',
   routes: _routes__WEBPACK_IMPORTED_MODULE_1__.routes
-}); //router.beforeEach((to, from, next) => {
-//    if (to.matched.some(record => record.meta.requiresAuth)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (!store.getters.logado) {
-//            next({
-//                path: '/Entrar',
-//            })
-//        } else {
-//            next()
-//        }
-//    } else if (to.matched.some(record => record.meta.requireVisitor)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (store.getters.logado) {
-//            next({
-//                path: '/Perfil',
-//            })
-//        } else {
-//            next()
-//        }
-//    }
-//    if (to.matched.some(record => record.meta.requiresAdmin)) {
-//        // this route requires auth, check if logged in
-//        // if not, redirect to login page.
-//        if (!store.getters.ehAdmin) {
-//            next({
-//                path: ' ',
-//            })
-//        } else {
-//            next()
-//        }
-//    } else {
-//        next() // make sure to always call next()!
-//    }
-//})
+});
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
+      next({
+        path: '/Entrar'
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(function (record) {
+    return record.meta.requireVisitor;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
+      next({
+        path: '/Perfil'
+      });
+    } else {
+      next();
+    }
+  }
 
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAdmin;
+  })) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.ehAdmin) {
+      next({
+        path: ' '
+      });
+    } else {
+      next();
+    }
+  } else {
+    next(); // make sure to always call next()!
+  }
+});
 vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('app', __webpack_require__(/*! ./App.vue */ "./resources/assets/js/App.vue"));
 var app = new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   el: '#app',
@@ -3026,7 +3033,7 @@ var getters = {
   }
 };
 var mutations = {
-  login: function login(state, token) {
+  recuperarToken: function recuperarToken(state, token) {
     state.token = token;
   },
   AddNoCarrinho: function AddNoCarrinho(state, data) {
@@ -3106,7 +3113,7 @@ var actions = {
       quantidade: data.quantidade
     });
   },
-  login: function login(context, credentials) {
+  recuperarToken: function recuperarToken(context, credentials) {
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/login', {
         username: credentials.username,
@@ -3114,7 +3121,7 @@ var actions = {
       }).then(function (response) {
         var token = response.data.access_token;
         localStorage.setItem('access_token', token);
-        context.commit('login', token); // verificar é função de administrador
+        context.commit('recuperarToken', token); // verificar é função de administrador
 
         (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
         axios__WEBPACK_IMPORTED_MODULE_0___default().get('/ehAdmin').then(function (response) {
@@ -3303,6 +3310,40 @@ var actions = {
         reject(error);
       });
     });
+  },
+  Verificar: function Verificar(state, data) {
+    var preco = data.preco;
+    paypal.Button.render({
+      env: 'sandbox',
+      style: {
+        label: 'compraragora',
+        fundingicons: true,
+        branding: true,
+        size: 'responsive',
+        shape: 'pill',
+        color: 'silver'
+      },
+      client: {
+        sandbox: 'ATwBhZGCs2k60iCBpJyyoEMX06G98zMTsV6ZyzpFZOePOYkcYsxaXs2GSY_cxY3TlaOQM6GuHvK6b3nN',
+        production: 'EF4YeHgsD9vYyFoynuYIX3jXNNkbe73d4YIzVryPEWQYtTip8zZZVJfXNfo4s0XTS3mhyA4e7BlsdULa'
+      },
+      commit: true,
+      payment: function payment(data, actions) {
+        return actions.payment.create({
+          transactions: [{
+            amount: {
+              total: PerformancePaintTiming,
+              currency: 'BRL'
+            }
+          }]
+        });
+      },
+      onAuthorize: function onAuthorize(data, actions) {
+        return actions.payment.execute().then(function () {
+          window.alert('Pagamento concluído!');
+        });
+      }
+    }, '#paypal-button-container');
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_3__["default"].Store({
@@ -53087,7 +53128,7 @@ var render = function () {
     [
       _c("i", _vm._b({}, "i", _vm.getCarrinhoItens, false)),
       _vm._v(" "),
-      _vm._l(_vm.produtos, function (produto, index) {
+      _vm._l(_vm.produtos, function (produto) {
         return _c("app-verificar", {
           key: produto.id,
           attrs: { id: produto.id, quantidade: produto.quantidade },
@@ -53101,7 +53142,7 @@ var render = function () {
         {
           staticClass: "btn btn-primary form-control CheckOut",
           attrs: { type: "submit" },
-          on: { click: _vm.verificar },
+          on: { click: _vm.CheckOut },
         },
         [_vm._v("Comprar Agora")]
       ),

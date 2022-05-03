@@ -3,7 +3,7 @@
 		<i v-bind="getCarrinhoItens"></i>
 
 		<app-verificar
-		  v-for="(produto, index) in produtos"
+		  v-for="produto in produtos"
 		  :id="produto.id"
 		  :quantidade="produto.quantidade"
 		  :key="produto.id">
@@ -12,7 +12,7 @@
 
 		<div class="clear"></div>
 
-		<button @click="verificar" type="submit" class="btn btn-primary form-control CheckOut">Comprar Agora</button>
+		<button @click="CheckOut" type="submit" class="btn btn-primary form-control CheckOut">Comprar Agora</button>
 	</div>
 </template>
 <script>
@@ -30,10 +30,10 @@ export default {
 		}
 	},
 	methods: {
-		varificar() {
-			const preco = this.$store.getters.precoTotal
-			this.$store.dispatch('verificar', {
-				preco: preco
+		CheckOut() {
+			const Preco = this.$store.getters.precoTotal
+			this.$store.dispatch('Verificar', {
+				preco: Preco
 			})
 			.then(response => {
 				this.data = response.data

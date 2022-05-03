@@ -36,7 +36,7 @@ export default {
 	},
 	methods: {
 		enviar() {
-			this.$store.dispatch('login', {
+			this.$store.dispatch('recuperarToken', {
 				username: this.username,
 				password: this.password
 			})
