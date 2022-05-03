@@ -11,8 +11,8 @@
 			</div>
 
 			<app-usuario
-			      v-for="usuario in usuarios" :key="usuario.id"
-				  :qt="usuario">
+			      v-for="user in users" :key="user.id"
+				  :qt="user">
 
 			</app-usuario>
 		</div>
@@ -24,15 +24,15 @@ export default {
 	name: 'UsuarioControle',
 	data() {
 		return {
-			usuarios: []
+			users: []
 		}
 	},
 	methods: {
 		getUsuarios() {
 			this.$store.dispatch('TodosUsuarios')
 			.then(response => {
-				this.usuarios = this.$store.getters.TodosUsuarios
-				console.log(this.usuarios);
+				this.users = this.$store.getters.TodosUsuarios
+				console.log(this.users);
 			})
 			.catch(error => {
 				console.log(error);

@@ -14,6 +14,7 @@ const state = {
     ProdutoDado: null,
     carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
     precoTotal: localStorage.getItem('precoTotal') || 0,
+    TodosUsuarios: null
 }
 const getters = {
     precoTotal(state) {
@@ -34,6 +35,9 @@ const getters = {
     ProdutoDado(state) {
         return state.ProdutoDado
     },
+    TodosUsuarios(state) {
+        return state.TodosUsuarios
+    }
 }
 const mutations = {
     login(state, token) {
@@ -106,6 +110,9 @@ const mutations = {
             state.carrinhoStore = novoArray
             localStorage.setItem('carrinhoItem', JSON.stringify(novoArray))
         }
+    },
+    TodosUsuarios(state, TodosUsuarios) {
+        state.TodosUsuarios = TodosUsuarios
     }
 }
 const actions = {
@@ -310,6 +317,41 @@ const actions = {
 
         return new Promise((resolve, reject) => {
             axios.delete('/DeletarUsuario/' + data.id)
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    TodosUsuarios(context, TodosUsuarios) {
+        if (context.getters.logado) {
+
+            return new Promise((resolve, reject) => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+                    axios.get('/TodosUsuarios')
+                        .then((response) => {
+                            context.commit('TodosUsuarios', response.data.users)
+                            resolve(response)
+                        })
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        }
+    },
+    EditarUsuarios(context, data) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        return new Promise((resolve, reject) => {
+            axios.put('/EditarUsuarios/' + data.id, {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    role_id: data.role_id,
+                    imagePath: data.imagePath
+                })
                 .then((response) => {
                     resolve(response)
                 })

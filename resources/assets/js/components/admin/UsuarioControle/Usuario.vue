@@ -9,6 +9,7 @@
 				<p class="card-text form-control">{{qt.email}}</p>
 				<div>
 					<strong class="card-text form-control">{{role}}</strong>
+					</br>
 				</div>
 				<div>
 					<a @click="editar" class="btn-primary form-control">Editar</a>
@@ -93,7 +94,7 @@ export default {
 			this.qt.imagePath = this.image 
 
 			this.$store.dispatch('EditarUsuarios', {
-				name: this.this.editValor,
+				name: this.editValor,
 				email: this.editEmail,
 				password: this.editPassword,
 				role_id: this.roleID,
@@ -123,7 +124,7 @@ export default {
 			this.criarImagem(files[0]);
 			this.dPath = ''
 		},
-		 createImage(file) {
+		 criarImagem(file) {
 			let reader = new FileReader();
 			let vm = this;
 			reader.onload = (e) => {
@@ -132,7 +133,7 @@ export default {
 			reader.readAsDataURL(file);
 		}
 	},
-	created: {
+	computed: {
 		seImagemForNula() {
 			if (this.qt.imagePath == null) {
 				this.image ='img.png'

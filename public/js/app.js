@@ -2251,6 +2251,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Usuario',
   props: ['qt'],
@@ -2304,7 +2305,7 @@ __webpack_require__.r(__webpack_exports__);
       this.qt.password = this.editPassword;
       this.qt.imagePath = this.image;
       this.$store.dispatch('EditarUsuarios', {
-        name: this["this"].editValor,
+        name: this.editValor,
         email: this.editEmail,
         password: this.editPassword,
         role_id: this.roleID,
@@ -2328,7 +2329,7 @@ __webpack_require__.r(__webpack_exports__);
       this.criarImagem(files[0]);
       this.dPath = '';
     },
-    createImage: function createImage(file) {
+    criarImagem: function criarImagem(file) {
       var reader = new FileReader();
       var vm = this;
 
@@ -2339,7 +2340,7 @@ __webpack_require__.r(__webpack_exports__);
       reader.readAsDataURL(file);
     }
   },
-  created: {
+  computed: {
     seImagemForNula: function seImagemForNula() {
       if (this.qt.imagePath == null) {
         this.image = 'img.png';
@@ -2395,7 +2396,7 @@ __webpack_require__.r(__webpack_exports__);
   name: 'UsuarioControle',
   data: function data() {
     return {
-      usuarios: []
+      users: []
     };
   },
   methods: {
@@ -2403,8 +2404,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$store.dispatch('TodosUsuarios').then(function (response) {
-        _this.usuarios = _this.$store.getters.TodosUsuarios;
-        console.log(_this.usuarios);
+        _this.users = _this.$store.getters.TodosUsuarios;
+        console.log(_this.users);
       })["catch"](function (error) {
         console.log(error);
         return false;
@@ -2998,7 +2999,8 @@ var state = {
   usuarioDado: null,
   ProdutoDado: null,
   carrinhoStore: JSON.parse(localStorage.getItem('carrinhoStore')) || [],
-  precoTotal: localStorage.getItem('precoTotal') || 0
+  precoTotal: localStorage.getItem('precoTotal') || 0,
+  TodosUsuarios: null
 };
 var getters = {
   precoTotal: function precoTotal(state) {
@@ -3018,6 +3020,9 @@ var getters = {
   },
   ProdutoDado: function ProdutoDado(state) {
     return state.ProdutoDado;
+  },
+  TodosUsuarios: function TodosUsuarios(state) {
+    return state.TodosUsuarios;
   }
 };
 var mutations = {
@@ -3087,6 +3092,9 @@ var mutations = {
       state.carrinhoStore = novoArray;
       localStorage.setItem('carrinhoItem', JSON.stringify(novoArray));
     }
+  },
+  TodosUsuarios: function TodosUsuarios(state, _TodosUsuarios) {
+    state.TodosUsuarios = _TodosUsuarios;
   }
 };
 var actions = {
@@ -3261,6 +3269,35 @@ var actions = {
     (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/DeletarUsuario/' + data.id).then(function (response) {
+        resolve(response);
+      })["catch"](function (error) {
+        reject(error);
+      });
+    });
+  },
+  TodosUsuarios: function TodosUsuarios(context, _TodosUsuarios2) {
+    if (context.getters.logado) {
+      return new Promise(function (resolve, reject) {
+        (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get('/TodosUsuarios').then(function (response) {
+          context.commit('TodosUsuarios', response.data.users);
+          resolve(response);
+        });
+      })["catch"](function (error) {
+        (0,lodash__WEBPACK_IMPORTED_MODULE_1__.reject)(error);
+      });
+    }
+  },
+  EditarUsuarios: function EditarUsuarios(context, data) {
+    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + context.state.token;
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put('/EditarUsuarios/' + data.id, {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role_id: data.role_id,
+        imagePath: data.imagePath
+      }).then(function (response) {
         resolve(response);
       })["catch"](function (error) {
         reject(error);
@@ -52450,6 +52487,8 @@ var render = function () {
                 _c("strong", { staticClass: "card-text form-control" }, [
                   _vm._v(_vm._s(_vm.role)),
                 ]),
+                _vm._v(" "),
+                _c("br"),
               ]),
               _vm._v(" "),
               _c("div", [
@@ -52667,8 +52706,8 @@ var render = function () {
           1
         ),
         _vm._v(" "),
-        _vm._l(_vm.usuarios, function (usuario) {
-          return _c("app-usuario", { key: usuario.id, attrs: { qt: usuario } })
+        _vm._l(_vm.users, function (user) {
+          return _c("app-usuario", { key: user.id, attrs: { qt: user } })
         }),
       ],
       2
