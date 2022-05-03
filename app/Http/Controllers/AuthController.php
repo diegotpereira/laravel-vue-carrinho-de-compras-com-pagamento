@@ -415,7 +415,7 @@ public function registrar(Request $request)
 	{
 		$this->validate($request, [
 			'name' => 'required',
-			'email' => 'required|email|unique::users',
+			'email' => 'required|email|unique:users',
 			'password' => 'required'
 		]);
 		$input = $request->all();
