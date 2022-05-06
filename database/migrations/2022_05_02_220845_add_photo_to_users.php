@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddPhotoToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function($table) {
-			$table->string('imagePath')->nullable();
-		});
+        //Schema::table('users', function($table) {
+		//	$table->string('imagePath')->nullable();
+		//});
     }
 
     /**
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function($table) {
-			$table->dropColumn('imagePath');
-		});
+        //Schema::table('users', function($table) {
+		//	$table->dropColumn('imagePath');
+		//});
     }
 };

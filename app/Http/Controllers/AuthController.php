@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use GuzzleHttp\Client;
-use Laravel\Passport\Client as OClient;
-use Laravel\Passport;
 use Illuminate\Support\Str;
-use Validator;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -40,21 +36,62 @@ public function registrar(Request $request)
         return response()->json(['token' => $token], 200);
     }
 
-	public function login(Request $request)
-    {
-        $data = [
-            'email' => $request->username,
-            'password' => $request->password
-        ];
+	//public function login(Request $request)
+    //{
+    //    $data = [
+    //        'email' => $request->username,
+    //        'password' => $request->password
+    //    ];
  
 		
-        if (auth()->attempt($data)) {
-            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
-            return response()->json(['token' => $token], 200);
-        } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
-        }
-    } 
+    //    if (auth()->attempt($data)) {
+    //        $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+    //        return response()->json(['token' => $token], 200);
+    //    } else {
+    //        return response()->json(['error' => 'Unauthorised'], 401);
+    //    }
+    //} 
+
+	public function login(Request $request)
+{
+ // 'http://laravel-vue-shipingcart-paymentgw/oauth/token'
+ //2
+ //'JjXJVbuAYxeyCAlUjuuOZJWCsuh1kJrLZtZpZjRv'
+      $this->validate($request,[
+           'username' => 'required|email',
+           'password' => 'required'
+      ]);
+
+     $http = new \GuzzleHttp\Client();
+	//$http = new \GuzzleHttp\Client;
+
+      try {
+         $response = $http->post(config('services.passport.login_endpoint'),[ 
+           'form_params' => [
+              'grant_type' => 'password',
+              'client_id' => config('services.passport.client_id'),
+              'client_secret' => config('services.passport.client_secret'),
+               'username' => $request->username,
+               'password' => $request->password,
+           ]
+        ]);
+		
+		return $response->getBody();
+
+      } catch(\GuzzleHttp\Exception\BadResponseException $e){
+      	if ($e->getCode() == 422) {
+
+      	  return response()->json('Invalid Request, plese enter a username', $e->getCode());
+      	}
+      	else if ($e->getCode() == 401) {
+      		
+      		return response()->json('Invalid username Or password.try again', $e->getCode());
+      	}
+
+      	return response()->json('Something want wrrong ont the server,', $e->getCode());
+      }
+
+ }
 
 	public function logout() 
 	{
@@ -180,67 +217,4 @@ public function registrar(Request $request)
 
 		return response()->json(['message' => 'usuario deletado', 200]);
 	}
-//	public function login(Request $request)
-//{
-
-//      $this->validate($request,[
-//           'username' => 'required|email',
-//           'password' => 'required'
-//      ]);
-
-//     $http = new \GuzzleHttp\Client();
-
-//      try {
-//         $response = $http->post(config('services.passport.login_endpoint'),[ 
-//           'form_params' => [
-//              'grant_type' => 'password',
-//              'client_id' => config('96360b77-4f6d-44e2-acb1-ef8104b8db92'),
-//              'client_secret' => config('bFU39NleTYZqun8YK1bLaS3AIRWj8r9Tkyy5dfmE'),
-//               'username' => $request->username,
-//               'password' => $request->password,
-//           ]
-//        ]);
-//		return $response->getBody();
-
-//      } catch(\GuzzleHttp\Exception\BadResponseException $e){
-//      	if ($e->getCode() == 422) {
-
-//      	  return response()->json('Invalid Request, plese enter a username', $e->getCode());
-//      	}
-//      	else if ($e->getCode() == 401) {
-      		
-//      		return response()->json('Invalid username Or password.try again', $e->getCode());
-//      	}
-
-//      	return response()->json('Something want wrrong ont the server,', $e->getCode());
-//      }
-
-// }
-
-
-
-
-//   public function registrar(Request $request)
-//	  {
-//	  	$this->validate($request,[
-//	         'name' => 'required',
-//	         'email' => 'required|email|unique:users',
-//	         'password' => 'required'
-//	  	]);
-
-//	  	$user = new User([
-//	          'name' => $request->input('name'),
-//	          'email' => $request->input('email'),
-//	          'password' => bcrypt($request->input('password'))
-//	  	]);
-	     
-//	    $user->save();
-
-//        Auth::login($user);
-
-//	    return response()->json([
-//	       'message' => 'Successfully created user!'
-//	    ], 201); 
-
-//	  }
 }

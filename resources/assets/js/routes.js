@@ -26,14 +26,14 @@ export const routes = [
         path: '/CarrinhoCompras',
         component: CarrinhoCompras,
         meta: {
-            //requiresAuth: true
+            requiresAuth: true
         }
     },
     {
         path: '/Admin',
         component: Admin,
         meta: {
-            //requiresAdmin: true,
+            requiresAdmin: true,
         }
     },
     {
@@ -54,7 +54,7 @@ export const routes = [
         path: '/NovoProduto',
         component: NovoProduto,
         meta: {
-            //requiresAdmin: true
+            requiresAdmin: true
         }
     },
     {
@@ -68,14 +68,14 @@ export const routes = [
         path: '/UsuarioControle',
         component: UsuarioControle,
         meta: {
-            //requiresAdmin: true
+            requiresAdmin: true
         }
     },
     {
         path: '/NovoUsuario',
         component: NovoUsuario,
         meta: {
-            //requiresAdmin: true
+            requiresAdmin: true
         }
     }
 ]

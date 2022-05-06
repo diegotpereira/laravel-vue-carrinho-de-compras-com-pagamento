@@ -2810,7 +2810,7 @@ router.beforeEach(function (to, from, next) {
     // if not, redirect to login page.
     if (_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
       next({
-        path: '/Perfil'
+        path: ' '
       });
     } else {
       next();
@@ -2933,12 +2933,14 @@ var routes = [{
 }, {
   path: '/CarrinhoCompras',
   component: _components_shop_CarrinhoCompras_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-  meta: {//requiresAuth: true
+  meta: {
+    requiresAuth: true
   }
 }, {
   path: '/Admin',
   component: _components_admin_Admin_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-  meta: {//requiresAdmin: true,
+  meta: {
+    requiresAdmin: true
   }
 }, {
   path: '/Entrar',
@@ -2955,7 +2957,8 @@ var routes = [{
 }, {
   path: '/NovoProduto',
   component: _components_admin_NovoProduto_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
-  meta: {//requiresAdmin: true
+  meta: {
+    requiresAdmin: true
   }
 }, {
   path: '/Logout',
@@ -2966,12 +2969,14 @@ var routes = [{
 }, {
   path: '/UsuarioControle',
   component: _components_admin_UsuarioControle_UsuarioControle_vue__WEBPACK_IMPORTED_MODULE_8__["default"],
-  meta: {//requiresAdmin: true
+  meta: {
+    requiresAdmin: true
   }
 }, {
   path: '/NovoUsuario',
   component: _components_admin_UsuarioControle_NovoUsuario_vue__WEBPACK_IMPORTED_MODULE_9__["default"],
-  meta: {//requiresAdmin: true
+  meta: {
+    requiresAdmin: true
   }
 }];
 
@@ -2999,7 +3004,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
-(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://127.0.0.1:8000/api';
+(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://127.0.0.1:80/api';
 var state = {
   token: localStorage.getItem('access_token') || null,
   admin: localStorage.getItem('ehAdmin') || null,
@@ -51570,7 +51575,7 @@ var render = function () {
       _c(
         "router-link",
         { staticClass: "navbar-brand", attrs: { tag: "a", to: "/" } },
-        [_vm._v("Navbar")]
+        [_vm._v("Painel")]
       ),
       _vm._v(" "),
       _c(
