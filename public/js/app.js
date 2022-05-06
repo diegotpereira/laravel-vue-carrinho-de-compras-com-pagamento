@@ -3004,7 +3004,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
-(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://127.0.0.1:80/api';
+(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://127.0.0.1:8000/api';
 var state = {
   token: localStorage.getItem('access_token') || null,
   admin: localStorage.getItem('ehAdmin') || null,

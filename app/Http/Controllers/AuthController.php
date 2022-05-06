@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Auth;
+use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
@@ -66,11 +67,12 @@ public function registrar(Request $request)
 	//$http = new \GuzzleHttp\Client;
 
       try {
-         $response = $http->post(config('services.passport.login_endpoint'),[ 
+         
+		$response = $http->request('POST', env('APP_URL').'/oauth/token', [
            'form_params' => [
               'grant_type' => 'password',
-              'client_id' => config('services.passport.client_id'),
-              'client_secret' => config('services.passport.client_secret'),
+              'client_id' => '3',
+              'client_secret' => 'BWLuNKeUJZJF6tTB7T20y4Ctk7I5U2OZxxCB8Ejs',
                'username' => $request->username,
                'password' => $request->password,
            ]
