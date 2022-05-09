@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 
-Route::middleware('auth:api')->post('/login','AuthController@login');
+Route::middleware('auth:api')->post('/oauth/token','App\Http\Controllers\AuthController@login');
 
 //Route::post('login', 'App\Http\Controllers\AuthController@login');
 

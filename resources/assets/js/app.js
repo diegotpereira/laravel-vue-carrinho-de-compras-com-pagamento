@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
         // if not, redirect to login page.
         if (store.getters.logado) {
             next({
-                path: ' ',
+                path: '/Perfil',
             })
         } else {
             next()

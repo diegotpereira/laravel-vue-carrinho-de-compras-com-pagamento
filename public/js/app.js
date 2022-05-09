@@ -2810,7 +2810,7 @@ router.beforeEach(function (to, from, next) {
     // if not, redirect to login page.
     if (_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.logado) {
       next({
-        path: ' '
+        path: '/Perfil'
       });
     } else {
       next();
@@ -3004,7 +3004,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
-(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://127.0.0.1:8000/api';
+(axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = 'http://localhost:8000';
 var state = {
   token: localStorage.getItem('access_token') || null,
   admin: localStorage.getItem('ehAdmin') || null,
@@ -3120,7 +3120,7 @@ var actions = {
   },
   recuperarToken: function recuperarToken(context, credentials) {
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/login', {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/oauth/token', {
         username: credentials.username,
         password: credentials.password
       }).then(function (response) {

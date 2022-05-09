@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Auth;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -53,47 +55,144 @@ public function registrar(Request $request)
     //    }
     //} 
 
-	public function login(Request $request)
-{
- // 'http://laravel-vue-shipingcart-paymentgw/oauth/token'
- //2
- //'JjXJVbuAYxeyCAlUjuuOZJWCsuh1kJrLZtZpZjRv'
-      $this->validate($request,[
-           'username' => 'required|email',
-           'password' => 'required'
-      ]);
+//	public function login(Request $request)
+//{
+//      $this->validate($request,[
+//           'username' => 'required|email',
+//           'password' => 'required'
+//      ]);
 
-     $http = new \GuzzleHttp\Client();
-	//$http = new \GuzzleHttp\Client;
+//     $http = new \GuzzleHttp\Client();
 
-      try {
-         
-		$response = $http->request('POST', env('APP_URL').'/oauth/token', [
-           'form_params' => [
-              'grant_type' => 'password',
-              'client_id' => '3',
-              'client_secret' => 'BWLuNKeUJZJF6tTB7T20y4Ctk7I5U2OZxxCB8Ejs',
-               'username' => $request->username,
-               'password' => $request->password,
-           ]
-        ]);
-		
-		return $response->getBody();
+//      try {
 
-      } catch(\GuzzleHttp\Exception\BadResponseException $e){
-      	if ($e->getCode() == 422) {
+//		$response = $http->post(config('services.passport.login_endpoint'),[ 
+//			'form_params' => [
+//			   'grant_type' => 'password',
+//			   'client_id' => config('services.passport.client_id'),
+//			   'client_secret' => config('services.passport.client_secret'),
+//				'username' => $request->username,
+//				'password' => $request->password,
+//			]
+//		 ]);
 
-      	  return response()->json('Invalid Request, plese enter a username', $e->getCode());
-      	}
-      	else if ($e->getCode() == 401) {
+//		$headers = [
+//			'Content-Type' => 'application/x-www-form-urlencoded|',
+//			'Accept'=>'application/json',
+				  
+//			  ];
+
+//			  $client_post = new \GuzzleHttp\Client([
+//				'headers' => $headers
+//			]);
+
+//			$r =  $client_post->request('POST', $http, [
+//				'form_params' => $response
+//			]);
+//			$response = $r->getBody()->getContents();
+//			$response = json_decode($response,true);
+
+//      } catch(\GuzzleHttp\Exception\BadResponseException $e){
+//      	if ($e->getCode() == 422) {
+
+//      	  return response()->json('Invalid Request, plese enter a username', $e->getCode());
+//      	}
+//      	else if ($e->getCode() == 401) {
       		
-      		return response()->json('Invalid username Or password.try again', $e->getCode());
-      	}
+//      		return response()->json('Invalid username Or password.try again', $e->getCode());
+//      	}
 
-      	return response()->json('Something want wrrong ont the server,', $e->getCode());
-      }
+//      	return response()->json('Something want wrrong ont the server,', $e->getCode());
+//      }
+//	}
 
- }
+public function login (Request $request) {
+	$validator = Validator::make($request->all(), [
+		'username' => 'required|string|email|max:255',
+		'password' => 'required|string|min:6|confirmed',
+	]);
+	if ($validator->fails())
+	{
+		return response(['errors'=>$validator->errors()->all()], 422);
+	}
+	$user = User::where('email', $request->email)->first();
+	if ($user) {
+		if (Hash::check($request->password, $user->password)) {
+			$token = $user->createToken('Laravel Password Grant Client')->accessToken;
+			$response = ['token' => $token];
+			return response($response, 200);
+		} else {
+			$response = ["message" => "Password mismatch"];
+			return response($response, 422);
+		}
+	} else {
+		$response = ["message" =>'User does not exist'];
+		return response($response, 422);
+	}
+}
+
+//public function login(Request $request)
+//    {   
+//      $http =new \GuzzleHttp\Client;
+//      try{
+//        $respone=$http->post(config('services.passport.login_endpoint'),[
+//          'form_params'=>[
+//            'grant_type'=>'password',
+//            'client_id'=>config('services.passport.client_id'),
+
+ 
+//            'client_secret'=>config('services.passport.client_secret'),
+//            'username'=>$request->username,
+//            'password'=>$request->password,
+//          ],
+//          'http_errors' => false
+//        ]);               
+//        return $respone->getBody();
+//      }
+   
+//      catch(\GuzzleHttp\Exception\BadResponeException $e){     
+//        if ($e->getcode()==400){
+//          return response()->json('Invalid Request. Please enter a username or a password.',$e->getcode());
+//        }else if ($e->getcode()==401){
+//          return response()->json('Your credentials are incorrect. PLease try again.',$e->getcode());
+//        }
+//        return response()->json('Something went wrong on the server.',$e->getcode());
+
+ 
+//      }
+
+//    }
+
+	//public function login(Request $request)
+    //{
+	//	$this->validate($request,[
+	//		'username' => 'required|email',
+	//		'password' => 'required'
+	//   ]);
+    //    //$email = $request->username;
+    //    //$password = $request->password;
+
+    //    //// Check if field is not empty
+    //    //if (empty($email) or empty($password)) {
+    //    //    return response()->json(['status' => 'error', 'message' => 'You must fill all fields']);
+    //    //}
+
+    //    $client = new Client();
+
+    //    try {
+    //        $response = $client->request('POST', env('APP_URL').'/oauth/token', [
+    //            "form_params" => [
+    //                "client_secret" => 'BWLuNKeUJZJF6tTB7T20y4Ctk7I5U2OZxxCB8Ejs',
+    //                "grant_type" => "password",
+    //                "client_id" => '3',
+    //                'username' => $request->username,
+    //                "password" => $request->password
+    //            ]
+    //        ]);
+    //    } catch (BadResponseException $e) {
+    //        return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+    //    }
+    //}
 
 	public function logout() 
 	{

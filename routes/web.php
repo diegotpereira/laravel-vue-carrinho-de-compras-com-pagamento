@@ -20,3 +20,12 @@ Route::get('/{vue_capture?}', function () {
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Route::group([
+//    'prefix' => 'api',
+//    'middleware' => [
+//        'auth.cors'
+//    ]
+//], function () {
+//    Route::post('/login', 'App\Http\Controllers\AuthController@login');
+//});
